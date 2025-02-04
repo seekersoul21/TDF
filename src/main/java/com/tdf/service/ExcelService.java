@@ -1,19 +1,24 @@
 package com.tdf.service;
 
+import com.tdf.dao.MetaDtaListDao;
 import com.tdf.entity.Employee;
+import com.tdf.entity.MetaDataList;
 import com.tdf.repository.EmployeeRepository;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ExcelService {
+
+
+    @Autowired
+    private MetaDtaListDao metaDtaListDao;
 
     private final EmployeeRepository employeeRepository;
 
@@ -30,6 +35,7 @@ public class ExcelService {
         ){
             Sheet sheet=workbook.getSheetAt(0);
             Iterator<Row> rowIterator= sheet.iterator();
+            String fileId=UUID.randomUUID().toString();
             DataFormatter dataFormatter=new DataFormatter();
             for(int i=0;i<sheet.getPhysicalNumberOfRows();i++){
                 Row row=sheet.getRow(i);
@@ -57,7 +63,7 @@ public class ExcelService {
                     String email=dataFormatter.formatCellValue(cell2);
                     String designation=dataFormatter.formatCellValue(cell3);
                     String mobile=dataFormatter.formatCellValue(cell4);
-                    Employee employee =new Employee(empId,name,email,designation,mobile);
+                    Employee employee =new Employee(fileId,empId,name,email,designation,mobile);
                     employees.add(employee);
 
                 }
@@ -66,10 +72,17 @@ public class ExcelService {
             }
             List<Employee> savedEmployee = employeeRepository.saveAll(employees);
 
+            MetaDataList metaDataList=new MetaDataList();
+            metaDataList.setCreatedDate(new Date());
+            metaDataList.setFileId(fileId);
+            metaDataList.setSize(savedEmployee.size());
+            metaDtaListDao.save(metaDataList);
+
 
         }catch (Exception e){
-
+            e.printStackTrace();
         }
+
         return employees;
     }
 }

@@ -14,11 +14,21 @@ public class Employee {
     @Id
     private String id;
 
+    private String fileId;
+
     private String empId;
     private String name;
     private String email;
     private String designation;
     private String mobile;
+
+    public String getFileId() {
+        return fileId;
+    }
+
+    public void setFileId(String fileId) {
+        this.fileId = fileId;
+    }
 
     public String getEmpId() {
         return empId;
@@ -68,7 +78,8 @@ public class Employee {
         this.mobile = mobile;
     }
 
-    public Employee(String empId, String name, String email, String designation, String mobile) {
+    public Employee(String fileId, String empId, String name, String email, String designation, String mobile) {
+        this.fileId = fileId;
         this.empId = empId;
         this.name = name;
         this.email = email;
