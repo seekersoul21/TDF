@@ -1,2 +1,6 @@
-#slkjjdbkjvbsd
-#ds vsd j sd v
+
+spring.application.name=tdf
+
+#mongodb connection code
+spring.data.mongodb.uri=mongodb://localhost:27017/tdf
+
